@@ -1,0 +1,27 @@
+# Copy outside Git or to jsj-admin/src/main/resources/application-local.yml (ignored).
+# This .example is NOT auto-loaded. Run with --spring.profiles.active=local.
+spring:
+  datasource:
+    url: ${ADMIN_DB_URL}
+    username: ${ADMIN_DB_USERNAME}
+    password: ${ADMIN_DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:1}
+  quartz:
+    auto-startup: false
+acq:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${ACQ_DB_URL}
+    username: ${ACQ_DB_USERNAME}
+    password: ${ACQ_DB_PASSWORD}
+  pay:
+    live: false
+token:
+  secret: ${JWT_SECRET}
+ruoyi:
+  profile: ${UPLOAD_DIR}

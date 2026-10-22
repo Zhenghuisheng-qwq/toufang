@@ -1,0 +1,4 @@
+<configuration>
+    <!-- Offline tests must not inherit the application's filesystem appenders. -->
+    <root level="OFF"/>
+</configuration>

@@ -1,0 +1,37 @@
+# ============================================================
+# jsj-admin 专属 Druid 扩展（连接信息见 application-common.yml）
+# 由 jsj-admin 通过 spring.config.import 引入
+# ============================================================
+
+spring:
+  datasource:
+    druid:
+      # 从库数据源
+      slave:
+        enabled: false
+        url:
+        username:
+        password:
+      # 连接池扩展参数
+      connect-timeout: 30000
+      socket-timeout: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      max-evictable-idle-time-millis: 900000
+      web-stat-filter:
+        enabled: true
+      stat-view-servlet:
+        enabled: true
+        allow:
+        url-pattern: /druid/*
+        login-username: ruoyi
+        login-password: 123456
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true

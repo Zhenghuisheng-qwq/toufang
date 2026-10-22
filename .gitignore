@@ -1,0 +1,278 @@
+# ============================================================
+# JSJ Scaffolding - .gitignore
+# ============================================================
+
+
+# ============================================================
+# 1. IntelliJ IDEA / JetBrains
+# ============================================================
+
+.idea/
+**/.idea/
+
+*.iml
+*.ipr
+*.iws
+
+out/
+**/out/
+
+
+# ============================================================
+# 2. VS Code
+# ============================================================
+
+.vscode/
+**/.vscode/
+
+
+# ============================================================
+# 3. Eclipse / STS
+# ============================================================
+
+.classpath
+.project
+.settings/
+.factorypath
+.springBeans
+.sts4-cache/
+
+
+# ============================================================
+# 4. Java / Maven
+# ============================================================
+
+target/
+**/target/
+
+*.class
+*.jar.original
+*.war
+*.nar
+
+dependency-reduced-pom.xml
+.mvn/timing.properties
+
+
+# ============================================================
+# 5. Java Runtime / Logs
+# ============================================================
+
+logs/
+**/logs/
+
+log/
+**/log/
+
+*.log
+*.log.*
+
+hs_err_pid*
+replay_pid*
+
+*.hprof
+*.dump
+
+
+# ============================================================
+# 6. Spring Boot Local Config
+# ============================================================
+
+application-local.yml
+application-local.yaml
+
+**/application-local.yml
+**/application-local.yaml
+
+**/application-*.local.yml
+**/application-*.local.yaml
+
+bootstrap-local.yml
+bootstrap-local.yaml
+
+**/bootstrap-local.yml
+**/bootstrap-local.yaml
+
+
+# ============================================================
+# 7. Node.js
+# ============================================================
+
+node_modules/
+**/node_modules/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.pnpm-store/
+
+.cache/
+**/.cache/
+
+.vite/
+**/.vite/
+
+
+# ============================================================
+# 8. Frontend Build Output
+# ============================================================
+
+dist/
+**/dist/
+
+build/
+**/build/
+
+coverage/
+**/coverage/
+
+.eslintcache
+.stylelintcache
+
+
+# ============================================================
+# 9. Environment Local Secrets
+# ============================================================
+
+.env.local
+.env.*.local
+.local/
+
+**/.env.local
+**/.env.*.local
+
+
+# ============================================================
+# 10. UniApp / HBuilderX
+# ============================================================
+
+unpackage/
+**/unpackage/
+
+.hbuilderx/
+**/.hbuilderx/
+
+uni_modules/.cache/
+
+
+# ============================================================
+# 11. WeChat Mini Program
+# ============================================================
+
+project.private.config.json
+**/project.private.config.json
+
+miniprogram_npm/
+**/miniprogram_npm/
+
+
+# ============================================================
+# 12. Generator Local Data
+# ============================================================
+
+generator/config/ConfigDB.db
+generator/config/ConfigDB.db-*
+generator/config/*.db-journal
+generator/config/*.db-shm
+generator/config/*.db-wal
+
+
+# ============================================================
+# 13. SQLite Temporary Files
+# ============================================================
+
+*.db-journal
+*.db-shm
+*.db-wal
+
+
+# ============================================================
+# 14. Upload / Temporary Files
+# ============================================================
+
+upload/
+uploads/
+
+**/upload/
+**/uploads/
+
+temp/
+tmp/
+
+**/temp/
+**/tmp/
+
+
+# ============================================================
+# 15. Windows
+# ============================================================
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+$RECYCLE.BIN/
+
+
+# ============================================================
+# 16. macOS
+# ============================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+._*
+
+
+# ============================================================
+# 17. Backup / Temporary Files
+# ============================================================
+
+*.bak
+*.backup
+*.tmp
+*.temp
+*.swp
+*.swo
+
+*~
+~$*
+
+
+# ============================================================
+# 18. Local Certificates / Keys
+# ============================================================
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+
+# ============================================================
+# 19. Local Database / Data Files
+# ============================================================
+
+*.mv.db
+*.trace.db
+
+
+# ============================================================
+# 20. Misc
+# ============================================================
+
+*.pid
+*.seed
+*.pid.lock
+
+# Admin form designer is source, not a build artifact.
+!jsj-admin-ui/src/views/tool/build/
+!jsj-admin-ui/src/views/tool/build/**

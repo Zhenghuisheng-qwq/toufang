@@ -1,0 +1,8 @@
+<!--pages/login/index.wxml-->
+<view class="login">
+  <view class="logo">JSJ</view>
+  <view class="tip">点击下方按钮，使用微信授权登录</view>
+  <button class="login-btn" bindtap="onLogin" loading="{{ loading }}" disabled="{{ loading }}">
+    {{ loading ? '登录中…' : '微信一键登录' }}
+  </button>
+</view>

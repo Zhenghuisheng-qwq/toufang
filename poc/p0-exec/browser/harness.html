@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>广告 H5 隔离 PoC</title>
+</head>
+<body>
+  <main id="app"></main>
+  <pre id="out"></pre>
+  <script type="module">
+    import { routeFromLocationHash, shouldBootstrapUser } from '../h5-route.js'
+    import { createH5Client } from '../h5-request.js'
+    import { buildReportEntry, createTicketDesk, stripExchange } from '../report-ticket.js'
+
+    const lines = []
+    const log = (ok, text) => lines.push(`${ok ? 'PASS' : 'FAIL'} ${text}`)
+
+    const route = routeFromLocationHash(location.hash)
+    const ad = !shouldBootstrapUser(route)
+    document.getElementById('app').textContent = ad ? `广告页已打开：${route || '(空)'}` : `非广告页：${route}`
+
+    localStorage.setItem('jsj_token', 'old-mini-token')
+    const calls = []
+    let redirected = false
+    const client = createH5Client({
+      baseUrl: '/api',
+      transport: async (req) => {
+        calls.push(req)
+        return { status: 401, data: { code: 401 } }
+      }
+    })
+
+    if (ad) {
+      log(true, '广告路由未走用户 bootstrap')
+      const result = await client.request('/h5/report', { ticket: 'poc-ticket' })
+      log(calls.length === 1 && calls[0].url === '/api/h5/report', '请求打到同源 /api')
+      log(calls[0].headers.Authorization === undefined, '请求未携带 jsj_token')
+      log(localStorage.getItem('jsj_token') === 'old-mini-token', '旧 jsj_token 保持不动')
+      log(result.redirectedToLogin === false && redirected === false, '401 未跳转登录页')
+    } else {
+      log(false, '当前 hash 不是广告页')
+    }
+
+    const desk = createTicketDesk({ ttlMs: 60_000 })
+    const voucherHash = 'b'.repeat(32)
+    const code = desk.issue({ voucherHash, orderNo: 'POC1' })
+    const entry = buildReportEntry(location.origin, code)
+    log(!entry.includes(voucherHash), 'URL 不含长期凭证')
+    log(desk.exchange(code) !== null && desk.exchange(code) === null, '交换码只能使用一次')
+    log(stripExchange(entry).endsWith('#/pages/h5/report'), '交换后地址去掉票据')
+
+    const live = await fetch('/api/h5/report', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'X-Report-Ticket': 'poc-ticket' }
+    })
+    log(live.status === 401, '同源 /api 实际返回 401')
+    log(location.hash === '#/pages/h5/report' && !location.pathname.includes('login'), '真实 401 后仍停在报告链接')
+
+    const out = document.getElementById('out')
+    out.textContent = lines.join('\n')
+    document.title = lines.every((line) => line.startsWith('PASS')) ? 'POC_PASS' : 'POC_FAIL'
+  </script>
+</body>
+</html>

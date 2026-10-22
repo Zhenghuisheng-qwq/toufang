@@ -1,0 +1,32 @@
+server:
+  port: 8881
+
+spring:
+  application:
+    name: jsj-mini
+
+  # 数据源 / Redis / MyBatis-Plus 由 jsj-service 统一提供（文件名不可与宿主 application.yml 同名）
+  config:
+    import: classpath:application-common.yml
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+logging:
+  level:
+    com.zhs: info
+
+# 微信小程序（mini 专属）
+wx:
+  mini:
+    app-id: ${WX_APP_ID:your-appid-here}
+    app-secret: ${WX_APP_SECRET:your-appsecret-here}

@@ -1,0 +1,52 @@
+# Cursor Rules for JSJ Scaffolding
+
+## Project Context
+
+This is a modern Java SaaS scaffolding with Spring Boot 3 + JDK 17 backend and multi-platform frontends (Vue 3 Admin UI, UniApp, WeChat Mini Program).
+
+## AI Agent Skills
+
+**Project Skills Location:** `.agents/skills/*/SKILL.md`
+
+**Available Skills:**
+- `senior-frontend` - Senior Frontend Engineering workflow for production-grade UI implementation
+
+**Skill Discovery:**
+- Claude Code: Automatically discovers `.agents/skills/*/SKILL.md`
+- Cursor: Please manually check `.agents/skills/` directory for available skills
+
+**Usage:**
+When working on frontend tasks (UI implementation, responsive design, component development, CSS optimization, visual review), apply the engineering standards defined in `.agents/skills/senior-frontend/SKILL.md`.
+
+## Frontend Standards
+
+**For Vue 3 Admin UI (jsj-admin-ui):**
+- Framework: Vue 3.5 + TypeScript 5.6
+- UI Library: Element Plus 2.13
+- Build Tool: Vite 6.4
+- State: Pinia
+- Design Tokens: `src/styles/variables.module.scss`
+- Component Library: `src/components/` (21 business components)
+
+**Quality Requirements:**
+- Production-grade quality (not just "works")
+- Responsive design (Desktop/Tablet/Mobile)
+- Visual verification (open in browser, not just build)
+- Root cause fixes (not CSS patches)
+- Maintainable code structure
+
+See `.agents/skills/senior-frontend/SKILL.md` for complete workflow and standards.
+
+## Code Conventions
+
+**Priority:**
+1. Follow existing project patterns
+2. Reuse existing components and utilities
+3. Match project Design Tokens
+4. Maintain consistent code style
+
+**Before creating new:**
+- Check existing components in `src/components/`
+- Check existing composables/hooks
+- Check existing Design Tokens in `variables.module.scss`
+- Check UI Library (Element Plus) capabilities
