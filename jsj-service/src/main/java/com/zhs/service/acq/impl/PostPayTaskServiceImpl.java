@@ -18,27 +18,16 @@ public class PostPayTaskServiceImpl implements PostPayTaskService {
 
     @Resource
     private PostPayTaskMapper postPayTaskMapper;
+    @Resource private com.zhs.service.mapper.acq.BusinessFlowMapper flow;
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(transactionManager="acqTransactionManager",rollbackFor=Exception.class)
     public void ensureTasks(String orderNo, LocalDateTime nextRunAt) {
         if (!StringUtils.hasText(orderNo) || nextRunAt == null) {
             throw new BusinessException("任务缺少订单号或执行时间");
         }
-        for (int taskType : AcquisitionCodes.POST_PAY_TASK_TYPES) {
-            Long existing = postPayTaskMapper.selectCount(new LambdaQueryWrapper<PostPayTask>()
-                    .eq(PostPayTask::getOrderNo, orderNo)
-                    .eq(PostPayTask::getTaskType, taskType));
-            if (existing != null && existing > 0) {
-                continue;
-            }
-            PostPayTask task = new PostPayTask();
-            task.setOrderNo(orderNo);
-            task.setTaskType(taskType);
-            task.setStatus(AcquisitionCodes.TASK_PENDING);
-            task.setAttemptCount(0);
-            task.setNextRunAt(nextRunAt);
-            postPayTaskMapper.insert(task);
-        }
+        for (int taskType : AcquisitionCodes.POST_PAY_TASK_TYPES) flow.taskAt(orderNo,taskType,nextRunAt);
+
     }
 
     @Override

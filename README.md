@@ -1,48 +1,55 @@
 # Toufang / Scaffolding-v2
 
-广告投放获客系统的当前开发基线：管理后台、独立 Mini 后端、共享领域服务及原生小程序。配置后台、模板渲染和报告持久化已实现；真实支付、H5 订单凭证、企微回调和三平台转化回传仍需后续开发与联调。
+广告投放获客系统。2026-10-23 已补齐独立 H5、匿名订单凭证、支付确认事务、持久化报告与异步任务、企微回调和广告回传适配代码，并完成指定数据库与 Chrome 隔离验收。真实微信支付、公众号授权、企微和广告接收尚未联调，不能作为生产上线完成结论。
 
-用户已明确主动删除 `jsj-uni-app` 与根目录 `generator`，保持删除，不寻找旧 R1–R2、不搬回 fmqx/zaq。H5 产品需求保留，新的前端实现方式另行决定。后台内置代码/表单生成工具与报告生成业务继续保留。
+完整交付、边界和遗留事项见 [业务链路交付报告](docs/codex-business-flow-review.md)。旧 R3 文档的认证失败、尚无 H5、未执行 SQL 等描述已被本报告替代，旧报告保留溯源。
 
-## 当前目录
+## 当前工程
 
 | 目录 | 职责 |
 | --- | --- |
-| jsj-admin | Spring Boot 3 管理后端，系统权限、运营配置和报告管理 |
-| jsj-admin-ui | Vue 3、TypeScript、Element Plus 管理前端 |
-| jsj-mini | Mini HTTP/Netty 后端；报告 Worker 仅在此注册，默认关闭 |
-| jsj-common | 共享异常和基础能力 |
-| jsj-service | 领域 Entity、Mapper、Service、报告渲染与持久化 |
-| jsj-mini-app | 原生微信小程序，本轮保持不变 |
-| sql | 初始化与增量脚本、菜单；执行前先比对实际结构 |
-| config-examples | 无秘密的本机配置示例和安全构建命令 |
-| docs | 当前接手审核和验收结果 |
-| poc | 内存规则实验，不代表生产 API 已接通 |
+| jsj-h5 | 新增独立 Vue 3 / TypeScript / Vite 广告 H5 |
+| jsj-mini | H5 API、平台回调、Mini 专属 Worker，保留移动端功能 |
+| jsj-service | 配置、订单、支付、报告、企微、广告领域事务 |
+| jsj-admin / jsj-admin-ui | 系统权限、配置与报告管理、业务查询、受控全额退款 |
+| jsj-common | 公共能力 |
+| jsj-mini-app | 原生小程序，保持不变 |
+| sql / config-examples / docs | 数据库脚本、脱敏配置与验收文档 |
 
-## 构建与运行条件
+用户主动删除的 jsj-uni-app、根 generator 保持删除；不需要 fmqx、zaq 或内部框架仓库。后台内置生成工具仍保留。主键保持 BIGINT AUTO_INCREMENT / IdType.AUTO，浏览器业务 ID 使用字符串。
 
-使用 JDK 21、Maven、Node/npm 和现有 package-lock.json。无根 Maven 聚合 POM。先安装 common/service 当前产物，再构建两个应用：
+## 构建
+
+需要 JDK 21、Maven、Node/npm，没有根聚合 POM。使用明确离线测试白名单：
 
 ```powershell
 mvn -f jsj-common/pom.xml install -DskipTests
-mvn -f jsj-service/pom.xml '-Dtest=AcquisitionRuleTest,AcquisitionConfigRuleTest,AcquisitionSchemaTest,PlainTextReportRendererTest,ConfigurationSafetyTest,ReportGenerationTest,OrderReportSnapshotTest,AuthDeliverySafetyTest,ReportAdminServiceTest' install
+mvn -f jsj-service/pom.xml '-Dtest=AcquisitionRuleTest,AcquisitionConfigRuleTest,AcquisitionSchemaTest,PlainTextReportRendererTest,ConfigurationSafetyTest,ReportGenerationTest,OrderReportSnapshotTest,AuthDeliverySafetyTest,ReportAdminServiceTest,FlowSecurityTest,PaymentConfirmationTest,PlatformCryptoTest,AdDeliveryAdapterTest' install
 mvn -f jsj-admin/pom.xml '-Dtest=ConfigurationPermissionTest' package
 mvn -f jsj-mini/pom.xml package -DskipTests
-cd jsj-admin-ui
-npx --no-install vue-tsc --noEmit
-npm run build:prod
 ```
 
-不要无筛选运行 `AcquisitionConstraintJdbcTest`，它会写数据库。构建不需要启动应用、调度器或连接业务库。
+不要无筛选执行 AcquisitionConstraintJdbcTest：它会写数据库且仍有旧环境假设。
 
-投放库唯一指定为 `106.55.61.223:3306/toufang`；系统登录/角色/菜单库独立配置，不能假定本机有 ry-vue。Redis、JWT 签名密钥、上传目录和数据库认证需要本地配置。示例文件不会自动加载，详见 [配置说明](config-examples/README.md)。不得把密码/私钥提交或粘贴到聊天。
+后台：进入 jsj-admin-ui，按既有锁文件安装依赖，执行 `npx --no-install vue-tsc --noEmit`、`npm run build:prod`。H5：进入 jsj-h5，执行 `npm ci --ignore-scripts`、`npx --no-install vue-tsc --noEmit`、`npm run build`。没有为通过检查升级既有依赖。
 
-本轮没有执行 SQL。不要直接导入历史全量初始化脚本覆盖现有库，也不要因本机缺少执行记录而重复升级。报告菜单增量 `sql/acq_menu_r3.sql` 默认禁止写入，必须先确认实际系统库、父菜单和 ID/权限冲突；不会自动授权角色。
+## 本地启动与数据库
 
-应用默认端口 Admin 8080、Mini HTTP 8881 / WS 9001。实际启动前检查系统库和 Redis、Quartz 初始化行为及端口归属；支付和报告 Worker 开关保持关闭。本轮未启动应用、未调用真实平台。
+本机已保留被 Git 忽略的 `.local/application-business.yml`、`.local/application-business-admin.yml`，从项目根或模块目录启动均自动导入。其他电脑按 [配置说明](config-examples/README.md) 准备本地值，示例不会自动生效。
 
-## 当前验收
+投放库唯一为 `106.55.61.223:3306/toufang`。本次 JDBC 核实当前系统登录、角色、菜单表也在该库；其他环境仍须确认系统库，不能假定 localhost/ry-vue 存在。本轮已执行 `sql/acquisition_business_flow.sql` 和 `sql/acq_menu_business_flow.sql`；未执行全量初始化、迁移旧系统表或给真实角色授权。不要导入全量 SQL 覆盖已有数据。
 
-完整前端类型检查与生产构建通过；Java 离线测试 47 项通过，POC 7 项通过。数据库工具故障与认证配置缺失仍导致实际数据库、四条后台 CRUD 和浏览器验收未完成，状态 `CURRENT_BASE_PARTIAL`。不能将这些构建/测试结果当作整个产品交付。
+```powershell
+# 从项目根运行，先确认端口和本地配置。
+java -jar jsj-admin/target/jsj-admin.jar --spring.quartz.job-store-type=memory --spring.quartz.auto-startup=false
+java -jar jsj-mini/target/jsj-mini-1.0.0.jar
+# 分别在前端模块运行 npm run dev。
+```
 
-详细范围、问题编号和修改清单见 [当前审核报告](docs/codex-r3-review.md)。[原项目索引](doc/project-index.md) 保留历史参考，其中旧模块或环境描述以当前基线为准。
+Admin 默认 8080、Mini HTTP 8881；后台沿用现有 Vite 配置，H5 开发端口 5174。H5 页面 `/pages/{已发布页面ID}`、订单 `/orders/{订单号}`，后台 `/acq/business`。H5 Host 必须对应已批准且启用的域名和页面关联，localhost 不等于已配置业务域名。Cookie 与 API 同源，生产 HTTPS 代理参考 [Nginx 示例](config-examples/h5-nginx.conf.example)。
+
+支付、OAuth、退款、企微外发/回调和各 Worker 默认关闭。Worker 还需显式 `since`，避免处理历史任务。本次测试端口 63400–63404 已释放，临时数据、账号和登录会话已清理。
+
+## 本轮验证
+
+服务层离线测试 53 项、管理权限测试 4 项通过；两个后端包、后台与 H5 完整类型检查和生产构建通过。指定数据库验证了并发下单、支付/任务整体回滚、入账幂等、租约保护、报告持久化和多老师关系隔离。Chrome 验证了表单、订单恢复、报告及后台菜单权限。未进行微信实机或真实平台外发，未覆盖项见交付报告。

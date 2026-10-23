@@ -1,52 +1,41 @@
-# 本机配置与构建
+# 本地配置和启动
 
-示例不自动加载，不含账号、密码或私钥。不要在聊天中粘贴秘密。
+2026-10-23：原“数据库未连接、未执行 SQL、H5 待实现”描述已失效。已通过 JDBC 验证指定 toufang 库与同服务器 Redis，详见 [本轮报告](../docs/codex-business-flow-review.md)。未修改服务器密码、授权或防火墙。
+
+本机可用配置在已忽略的 `.local/application-business.yml` 与 `.local/application-business-admin.yml`。当前可直接使用，不要求再次提供密码。应用从项目根或模块目录启动均导入这些文件。新机器复制同名 .example 的结构后在本地填值或注入环境变量，不提交真实凭据。
 
 | 变量 | 用途 |
 | --- | --- |
-| ADMIN_DB_URL / ADMIN_DB_USERNAME / ADMIN_DB_PASSWORD | Admin 系统登录、角色、菜单数据源。实际实例需本机确认；业务 SQL 不在此执行 |
-| ACQ_DB_URL / ACQ_DB_USERNAME / ACQ_DB_PASSWORD | Admin 投放数据源，仅允许已授权的 106.55.61.223:3306/toufang |
-| BOOT_DB_URL / BOOT_DB_USERNAME / BOOT_DB_PASSWORD | Mini 默认业务数据源；投放同样指向指定 toufang。Admin 使用示例中的 ADMIN_DB_* 覆盖公共默认项 |
-| REDIS_HOST / REDIS_PORT / REDIS_PASSWORD / REDIS_DATABASE | 实际可用的 Redis，不能假定旧电脑本机服务已迁移 |
-| JWT_SECRET | 管理端随机签名密钥，符合现有 HS512 长度要求；不再使用仓库默认值 |
-| UPLOAD_DIR | Admin 实际可写的上传目录；已上传图片文件需另行确认来源与备份 |
-| WX_APP_ID / WX_APP_SECRET | 原小程序授权配置；不等于公众号或微信支付授权 |
+| BOOT_DB_URL / BOOT_DB_USERNAME / BOOT_DB_PASSWORD | Mini 默认数据源，指定 toufang |
+| ADMIN_DB_URL / ADMIN_DB_USERNAME / ADMIN_DB_PASSWORD | Admin 系统登录、角色和菜单数据源 |
+| ACQ_DB_URL / ACQ_DB_USERNAME / ACQ_DB_PASSWORD | Admin 投放事务数据源，指定 toufang |
+| REDIS_HOST / REDIS_PORT / REDIS_PASSWORD / REDIS_DATABASE | 实际 Redis；本机授权服务器当前无密码 |
+| JWT_SECRET | Admin HS512 随机签名密钥，至少 64 字节 |
+| UPLOAD_DIR | Admin 可写上传目录；本机使用 .local/uploads 的绝对路径 |
+| WX_APP_ID / WX_APP_SECRET | 原小程序授权，不替代公众号或支付商户授权 |
 
-JDBC URL 的 TLS 与证书参数按已授权环境设置，不以关闭安全校验解决网络问题。远程库连接可能需要防火墙、白名单或 VPN 配置；本轮没有修改网络规则。系统库需要已有 sys_user、sys_role、sys_menu 等数据及登录账号，SQL 文件存在不代表数据已导入。
+当前系统表实际位于 toufang，配置仍支持系统/投放库分开；其他环境不能推定同库。网络不可达时核对来源白名单，不自行修改远程授权。
 
-将对应 .example 内容复制到被忽略的 application-local.yml，或使用明确的外部配置路径。Admin 默认 local；Mini 选择 local 才加载其本地文件。不要把秘密添加到受跟踪文件。
+数据源初始化 SQL 将 MySQL session time_zone 设为 +08:00，与应用时间一致。仅 JDBC serverTimezone 不会改变 MySQL NOW() 时区。本轮没有改写历史记录时间，旧任务须审核后按 since 划定范围。
 
-本轮没有启动应用。Admin 的 SysJobServiceImpl 初始化会清理并重新登记 Quartz 任务；示例禁用 Quartz 自动运行，仍需检查任务存储方式及启动生命周期后再启动。Mini 启动还会拉起 Netty。报告 Worker 默认 false，仅在完成迁移和运行验收后显式开启；支付 live 保持 false。
+## 平台配置
 
-无根 POM。使用 Java 21，先构建当前依赖，避免旧缓存：
+后台仅保存 ref:alias；PlatformSecrets 只解析 acq.secrets.alias，不读取任意路径或其他属性。私钥、平台公钥/证书、APIv3 密钥、企微 Token/AES/客户联系 Secret、广告 Token 从本地密钥源注入。
 
-```powershell
-mvn -f jsj-common/pom.xml install
-mvn -f jsj-service/pom.xml '-Dtest=AcquisitionRuleTest,AcquisitionConfigRuleTest,AcquisitionSchemaTest,PlainTextReportRendererTest,ConfigurationSafetyTest,ReportGenerationTest,OrderReportSnapshotTest,AuthDeliverySafetyTest,ReportAdminServiceTest' install
-mvn -f jsj-admin/pom.xml '-Dtest=ConfigurationPermissionTest' package
-mvn -f jsj-mini/pom.xml package -DskipTests
-```
+公众号另需 acq.oauth.{appId}.secret-ref，appId 与订单支付快照一致。备注/标签规则为 acq.wecom.automation.{corpId}，仅支持明确确认的 EMPTY_ONLY 备注与同企业标签追加。共享获客链接不推断订单。
 
-本机 Maven 未加入 PATH 时使用已安装 Maven 的绝对路径。不要无筛选运行服务层全部测试：AcquisitionConstraintJdbcTest 会写数据库，且保留了旧本地库假设。
+开关见 [业务配置示例](application-business.yml.example)。每个 Worker 需 enabled=true 和审查后的 ISO 本地时间 since；支付、退款及外发另有独立开关。退款只支持显式 FULL_REVOKE 策略下的全额退款，未确认时关闭。
 
-Admin UI 使用现有 package-lock.json；已有依赖可直接执行 npm run build:prod 和 npx --no-install vue-tsc --noEmit。本轮没有升级依赖、重写锁文件。本轮完整类型检查与生产构建分别通过；两项命令仍须独立执行。
+Admin 示例使用内存 Quartz 且关闭自动启动，启动前仍需核对 SysJob 初始化逻辑。不要在未经审查的数据库上使用 JDBC Quartz 初始化。
 
-数据库脚本均未执行：
+## 同源部署与 SQL
 
-1. 空库初始化使用 sql/acquisition.sql（27 张表，含 B2/R3 字段）；不用于给已有表升级。
-2. 现有 R0-A/B1 库先核对结构，再依次审查 acquisition_r0b1.sql、acquisition_r0b2.sql、acquisition_r3.sql。
-3. 已有字段脚本不会覆盖其类型，必须核对实际定义；sid 重复等约束冲突需要人工调查，不能靠删数据解决。
-4. 旧主键若不是 AUTO_INCREMENT，另行审查既有 acquisition_auto_increment.sql，不能盲目连跑。
-5. 核验实际系统库与父菜单后审查 acq_menu_r0b2.sql、acq_menu_r3.sql。B2 旧脚本仍固定 ry-vue，实际库名不符时不得直接运行；R3 需明确设置已核验的 @approved_system_database，默认 NULL 不插入。检查 ID/权限冲突，不自动分配角色权限。
-6. DDL 自动提交，先备份与确定执行窗口；错误可能留下已完成的字段及迁移过程。检查失败位置并重新比对差异；本轮不执行 DROP、过程清理或全量重跑。
+生产 HTTPS 静态资源与 /api 同域。参考 [Nginx 示例](h5-nginx.conf.example) 设置可信转发头，并在 Mini 显式开启 forwarded-headers 处理；不能将信任转发头的后端直接暴露公网。各域名必须分别完成 H5 支付、公众号网页授权和平台回调的授权配置。
 
-jsj-uni-app 与根目录 generator 是用户主动删除，保持删除；无需寻找旧 R1–R2 或搬回 fmqx/zaq。H5、支付及订单凭证后续按新基线实现，本轮不决定新前端方案。
+H5 开发端口 5174，默认代理 Mini 8881。业务 Host 仍需已授权域名配置；后台 /dev-api 代理 Admin 8080。生产不使用测试端口 63400–63404。
 
-## 2026-10-22 本机诊断
+本轮实际执行 acquisition_business_flow.sql、acq_menu_business_flow.sql。acquisition.sql 已同步字段，但没有在已有库执行；新环境先核对初始化及增量依赖。菜单不分配真实角色。
 
-- MySQL 工具 SELECT DATABASE() 报 Transport closed；这是工具传输故障。
-- 沙箱内 TCP 探测失败，获准在沙箱外对唯一指定地址探测后，106.55.61.223:3306 连接成功。未扫描其他地址/端口。
-- 未发现 Admin/Mini application-local.yml；进程环境的 ADMIN_DB_*、ACQ_DB_*、BOOT_DB_*、REDIS_HOST、JWT_SECRET、UPLOAD_DIR 未设置。没有进行 MySQL 认证或 JDBC 查询，因此不推断账号错误、表权限或数据源实际绑定。
-- 凭据通过已授权本地配置文件或环境注入；不要在对话中发送密码或私钥。连接目标可达不代表已获数据库权限。
-- 两个开关继续关闭，无应用启动、真实支付/企微/广告请求、数据库写入或迁移。
-- 报告管理页面路径 acq/report/index，权限 acq:report:query、acq:report:content、acq:report:retry；权限需系统库负责人审查后分配，不能用编辑权限代替正文/补生成权限。
+DDL 自动提交，执行前备份、比对字段类型和唯一索引。IF NOT EXISTS 不能证明其他环境已有结构正确。不得盲目执行旧脚本固定 ry-vue 的语句。
+
+构建命令及离线白名单见 README。AcquisitionConstraintJdbcTest 不在白名单。真实库验收仅用独立配置和精确 ID 清理，未增加生产模拟支付接口。
