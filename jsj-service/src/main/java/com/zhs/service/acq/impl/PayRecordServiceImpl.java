@@ -6,6 +6,7 @@ import com.zhs.common.exception.BusinessException;
 import com.zhs.service.acq.AcquisitionCodes;
 import com.zhs.service.acq.PayRecordService;
 import com.zhs.service.acq.TradeOrderService;
+import com.zhs.service.acq.flow.PaymentConfirmationService;
 import com.zhs.service.mapper.acq.PayRecordMapper;
 import com.zhs.service.mapper.acq.TradeOrderMapper;
 import com.zhs.service.model.acq.PayRecord;
@@ -28,7 +29,9 @@ public class PayRecordServiceImpl implements PayRecordService {
 
     @Resource
     private TradeOrderService tradeOrderService;
-    @Resource private com.zhs.service.acq.flow.PaymentConfirmationService confirmations;
+
+    @Resource
+    private PaymentConfirmationService confirmations;
 
     @Override
     public PayRecord savePending(PayRecord record) {

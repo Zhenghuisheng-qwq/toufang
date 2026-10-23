@@ -16,8 +16,12 @@ public class PayMerchantVersionServiceImpl implements PayMerchantVersionService 
 
     @Resource
     private PayMerchantVersionMapper payMerchantVersionMapper;
-    @Resource private PayMerchantMapper payMerchantMapper;
-    @Resource private ConfigReferenceMapper references;
+
+    @Resource
+    private PayMerchantMapper payMerchantMapper;
+
+    @Resource
+    private ConfigReferenceMapper references;
 
     @Override
     @Transactional(transactionManager = "acqTransactionManager", rollbackFor = Exception.class)

@@ -7,6 +7,7 @@ import com.zhs.common.exception.BusinessException;
 import com.zhs.service.acq.AcqDuplicate;
 import com.zhs.service.acq.AcqTexts;
 import com.zhs.service.acq.AcquisitionCodes;
+import com.zhs.service.acq.ConfigViews;
 import com.zhs.service.acq.ReportTemplateAdminService;
 import com.zhs.service.acq.report.PlainTextReportRenderer;
 import com.zhs.service.acq.dto.AcqPage;
@@ -22,21 +23,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportTemplateAdminServiceImpl implements ReportTemplateAdminService {
-    public java.util.List<java.util.Map<String,Object>> options(String keyword) {
-        var templates = reportTemplateMapper.selectList(new LambdaQueryWrapper<ReportTemplate>()
+    public List<Map<String, Object>> options(String keyword) {
+        List<ReportTemplate> templates = reportTemplateMapper.selectList(new LambdaQueryWrapper<ReportTemplate>()
                 .like(keyword != null && !keyword.isBlank(), ReportTemplate::getTemplateName, keyword)
                 .orderByDesc(ReportTemplate::getId).last("LIMIT 100"));
         return templates.stream().map(t -> {
-            var v = t.getCurrentVersionId() == null ? null : reportTemplateVersionMapper.selectById(t.getCurrentVersionId());
+            ReportTemplateVersion v = t.getCurrentVersionId() == null ? null : reportTemplateVersionMapper.selectById(t.getCurrentVersionId());
             boolean complete = v != null && t.getId().equals(v.getTemplateId()) && Integer.valueOf(1).equals(v.getStatus());
             if (complete) {
-                try { reportRenderer.validate(v.getContentType(), v.getContentText()); }
-                catch (BusinessException e) { complete = false; }
+                try {
+                    reportRenderer.validate(v.getContentType(), v.getContentText());
+                } catch (BusinessException e) {
+                    complete = false;
+                }
             }
-            return com.zhs.service.acq.ConfigViews.of("id", t.getId(), "templateName", t.getTemplateName(),
+            return ConfigViews.of("id", t.getId(), "templateName", t.getTemplateName(),
                     "status", t.getStatus(), "currentVersionId", t.getCurrentVersionId(),
                     "versionNo", v == null ? null : v.getVersionNo(), "complete", complete);
         }).toList();
@@ -46,6 +51,7 @@ public class ReportTemplateAdminServiceImpl implements ReportTemplateAdminServic
 
     @Resource
     private ReportTemplateMapper reportTemplateMapper;
+
     @Resource
     private ReportTemplateVersionMapper reportTemplateVersionMapper;
 
@@ -217,7 +223,9 @@ public class ReportTemplateAdminServiceImpl implements ReportTemplateAdminServic
         }
         // Use a current locking read; a repeatable-read snapshot may predate the parent lock.
         version = reportTemplateVersionMapper.lockById(versionId);
-        if (version == null) throw new BusinessException("版本不存在");
+        if (version == null) {
+            throw new BusinessException("版本不存在");
+        }
         if (version.getStatus() != null && version.getStatus() == AcquisitionCodes.VERSION_PUBLISHED) {
             throw new BusinessException("该版本已经发布");
         }
@@ -253,7 +261,9 @@ public class ReportTemplateAdminServiceImpl implements ReportTemplateAdminServic
             throw new BusinessException("报告模板不存在");
         }
         version = reportTemplateVersionMapper.lockById(versionId);
-        if (version == null) throw new BusinessException("版本不存在");
+        if (version == null) {
+            throw new BusinessException("版本不存在");
+        }
         if (version.getStatus() == null || version.getStatus() != AcquisitionCodes.VERSION_DRAFT) {
             throw new BusinessException("已发布版本不能删除");
         }

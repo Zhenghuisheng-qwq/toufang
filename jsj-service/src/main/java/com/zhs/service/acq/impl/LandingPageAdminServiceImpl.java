@@ -14,9 +14,11 @@ import com.zhs.service.acq.dto.LandingAssetCommand;
 import com.zhs.service.acq.dto.LandingPageQuery;
 import com.zhs.service.acq.dto.LandingPageSaveCommand;
 import com.zhs.service.acq.dto.LandingViews;
+import com.zhs.service.mapper.acq.AdAccountMapper;
 import com.zhs.service.mapper.acq.LandingAssetMapper;
 import com.zhs.service.mapper.acq.LandingDomainMapper;
 import com.zhs.service.mapper.acq.LandingPageMapper;
+import com.zhs.service.mapper.acq.PayMerchantMapper;
 import com.zhs.service.mapper.acq.ReportTemplateMapper;
 import com.zhs.service.model.acq.LandingAsset;
 import com.zhs.service.model.acq.LandingDomain;
@@ -44,6 +46,12 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
     private LandingDomainMapper landingDomainMapper;
     @Resource
     private ReportTemplateMapper reportTemplateMapper;
+
+    @Resource
+    private AdAccountMapper adAccounts;
+
+    @Resource
+    private PayMerchantMapper merchants;
 
     @Override
     public AcqPage<LandingViews.Row> page(LandingPageQuery query) {
@@ -174,9 +182,6 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         landingPageMapper.deleteById(id);
     }
 
-    @jakarta.annotation.Resource private com.zhs.service.mapper.acq.AdAccountMapper adAccounts;
-    @jakarta.annotation.Resource private com.zhs.service.mapper.acq.PayMerchantMapper merchants;
-
     private void apply(LandingPage page, LandingPageSaveCommand command) {
         if (command == null) {
             throw new BusinessException("请填写落地页配置");
@@ -202,9 +207,13 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
             }
         }
         page.setReportTemplateId(command.getReportTemplateId());
-        if(command.getAdAccountId()!=null && adAccounts.lockById(command.getAdAccountId())==null)throw new BusinessException("广告账户不存在");
+        if (command.getAdAccountId() != null && adAccounts.lockById(command.getAdAccountId()) == null) {
+            throw new BusinessException("广告账户不存在");
+        }
         page.setAdAccountId(command.getAdAccountId());
-        if(command.getPayMerchantId()!=null && merchants.lockById(command.getPayMerchantId())==null)throw new BusinessException("支付商户不存在");
+        if (command.getPayMerchantId() != null && merchants.lockById(command.getPayMerchantId()) == null) {
+            throw new BusinessException("支付商户不存在");
+        }
         page.setPayMerchantId(command.getPayMerchantId());
     }
 
@@ -287,7 +296,9 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         row.setPriceYuan(MoneyAmounts.fenToYuan(page.getPriceFen()));
         row.setPublishStatus(page.getPublishStatus());
         row.setSortNo(page.getSortNo());
-        row.setReportTemplateId(page.getReportTemplateId());row.setAdAccountId(page.getAdAccountId());row.setPayMerchantId(page.getPayMerchantId());
+        row.setReportTemplateId(page.getReportTemplateId());
+        row.setAdAccountId(page.getAdAccountId());
+        row.setPayMerchantId(page.getPayMerchantId());
         row.setNameEnabled(page.getNameEnabled());
         row.setGenderEnabled(page.getGenderEnabled());
         row.setBirthDateEnabled(page.getBirthDateEnabled());
@@ -307,7 +318,9 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         detail.setPriceFen(row.getPriceFen());
         detail.setPublishStatus(row.getPublishStatus());
         detail.setSortNo(row.getSortNo());
-        detail.setReportTemplateId(row.getReportTemplateId());detail.setAdAccountId(row.getAdAccountId());detail.setPayMerchantId(row.getPayMerchantId());
+        detail.setReportTemplateId(row.getReportTemplateId());
+        detail.setAdAccountId(row.getAdAccountId());
+        detail.setPayMerchantId(row.getPayMerchantId());
         detail.setNameEnabled(row.getNameEnabled());
         detail.setGenderEnabled(row.getGenderEnabled());
         detail.setBirthDateEnabled(row.getBirthDateEnabled());

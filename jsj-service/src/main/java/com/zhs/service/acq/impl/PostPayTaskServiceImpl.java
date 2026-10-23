@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhs.common.exception.BusinessException;
 import com.zhs.service.acq.AcquisitionCodes;
 import com.zhs.service.acq.PostPayTaskService;
+import com.zhs.service.mapper.acq.BusinessFlowMapper;
 import com.zhs.service.mapper.acq.PostPayTaskMapper;
 import com.zhs.service.model.acq.PostPayTask;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -18,16 +20,19 @@ public class PostPayTaskServiceImpl implements PostPayTaskService {
 
     @Resource
     private PostPayTaskMapper postPayTaskMapper;
-    @Resource private com.zhs.service.mapper.acq.BusinessFlowMapper flow;
+
+    @Resource
+    private BusinessFlowMapper flow;
 
     @Override
-    @org.springframework.transaction.annotation.Transactional(transactionManager="acqTransactionManager",rollbackFor=Exception.class)
+    @Transactional(transactionManager = "acqTransactionManager", rollbackFor = Exception.class)
     public void ensureTasks(String orderNo, LocalDateTime nextRunAt) {
         if (!StringUtils.hasText(orderNo) || nextRunAt == null) {
             throw new BusinessException("任务缺少订单号或执行时间");
         }
-        for (int taskType : AcquisitionCodes.POST_PAY_TASK_TYPES) flow.taskAt(orderNo,taskType,nextRunAt);
-
+        for (int taskType : AcquisitionCodes.POST_PAY_TASK_TYPES) {
+            flow.taskAt(orderNo, taskType, nextRunAt);
+        }
     }
 
     @Override

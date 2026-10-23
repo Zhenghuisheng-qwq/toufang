@@ -36,11 +36,7 @@ public class WeChatMiniService {
         String profileStr = profiles.length > 0 ? String.join(",", profiles) : "(default)";
         String appId = wxMiniProperties.getAppId();
         String appSecret = wxMiniProperties.getAppSecret();
-        log.info("[wx] 启动诊断 activeProfiles={} wx.mini.appId={} wx.mini.appSecret.empty={} appSecret.len={}",
-                profileStr,
-                appId != null ? appId : "null",
-                appSecret == null || !StringUtils.hasText(appSecret),
-                appSecret != null ? appSecret.length() : 0);
+        log.info("[wx] 启动诊断 activeProfiles={} wx.mini.appId={} wx.mini.appSecret.empty={} appSecret.len={}", profileStr, appId != null ? appId : "null", appSecret == null || !StringUtils.hasText(appSecret), appSecret != null ? appSecret.length() : 0);
     }
 
     public WeChatSessionResult getOpenIdByCode(String code) {
@@ -56,13 +52,7 @@ public class WeChatMiniService {
             throw new BusinessException("服务端微信配置未就绪，请联系管理员");
         }
 
-        String url = UriComponentsBuilder
-                .fromUriString("https://api.weixin.qq.com/sns/jscode2session")
-                .queryParam("appid", appId)
-                .queryParam("secret", appSecret)
-                .queryParam("js_code", code)
-                .queryParam("grant_type", "authorization_code")
-                .build().toUriString();
+        String url = UriComponentsBuilder.fromUriString("https://api.weixin.qq.com/sns/jscode2session").queryParam("appid", appId).queryParam("secret", appSecret).queryParam("js_code", code).queryParam("grant_type", "authorization_code").build().toUriString();
 
         try {
             String body = REST_TEMPLATE.getForObject(url, String.class);

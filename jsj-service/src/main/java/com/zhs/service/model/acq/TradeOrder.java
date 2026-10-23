@@ -23,7 +23,10 @@ public class TradeOrder extends AcqEntity implements Serializable {
     private java.time.LocalDate reportBirthDate;
     private java.time.LocalTime reportBirthTime;
 
-    @Override public String toString() { return "TradeOrder[redacted]"; }
+    @Override
+    public String toString() {
+        return "TradeOrder[redacted]";
+    }
 
     private Long sessionId;
     private String adSnapshot;

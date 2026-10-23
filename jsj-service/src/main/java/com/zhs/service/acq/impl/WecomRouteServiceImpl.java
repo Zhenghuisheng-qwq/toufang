@@ -21,10 +21,18 @@ public class WecomRouteServiceImpl implements WecomRouteService {
 
     @Resource
     private WecomRouteMapper wecomRouteMapper;
-    @Resource private ConfigReferenceMapper references;
-    @Resource private WecomCorpMapper corps;
-    @Resource private WecomTeacherMapper teachers;
-    @Resource private LandingPageMapper pages;
+
+    @Resource
+    private ConfigReferenceMapper references;
+
+    @Resource
+    private WecomCorpMapper corps;
+
+    @Resource
+    private WecomTeacherMapper teachers;
+
+    @Resource
+    private LandingPageMapper pages;
 
     @Override
     @Transactional(transactionManager = "acqTransactionManager", rollbackFor = Exception.class)

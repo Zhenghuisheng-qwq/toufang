@@ -17,7 +17,10 @@ public class TradeReport extends AcqEntity implements Serializable {
     private String contentText;
     private String generationMode;
     private java.time.LocalDateTime generatedTime;
-    @Override public String toString() { return "TradeReport[redacted]"; }
+    @Override
+    public String toString() {
+        return "TradeReport[redacted]";
+    }
 
     @Serial
     private static final long serialVersionUID = 1L;

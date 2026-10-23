@@ -725,47 +725,43 @@ create table gen_table_column (
 ) engine=innodb default charset=utf8mb4 auto_increment=1 comment = '代码生成业务表字段';
 
 -- BEGIN ACQ ADMIN MENU
--- 投放后台菜单。只追加 sys_menu，不删除、不改已有菜单，也不自动授予角色。
+-- 投放后台菜单。页面直接作为一级菜单，不再挂在「投放管理」目录下。
 -- 不要为了执行本段而重跑本文件前面的 DROP TABLE。
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2000, '投放管理', 0, 5, 'acq', NULL, '', '', 1, 0, 'M', '0', '0', '', 'guide', 'admin', sysdate(), '', NULL, '投放后台'
-WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2000 OR (perms <> '' AND perms = ''));
-INSERT INTO sys_menu
-    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2001, '落地页管理', 2000, 1, 'landing', 'acq/landing/index', '', '', 1, 0, 'C', '0', '0', 'acq:landing:list', 'form', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2001, '落地页管理', 0, 5, 'landing', 'acq/landing/index', '', '', 1, 0, 'C', '0', '0', 'acq:landing:list', 'form', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2001 OR (perms <> '' AND perms = 'acq:landing:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2002, '报告模板', 2000, 2, 'template', 'acq/template/index', '', '', 1, 0, 'C', '0', '0', 'acq:template:list', 'education', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2002, '报告模板', 0, 6, 'template', 'acq/template/index', '', '', 1, 0, 'C', '0', '0', 'acq:template:list', 'education', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2002 OR (perms <> '' AND perms = 'acq:template:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2003, '域名管理', 2000, 3, 'domain', 'acq/domain/index', '', '', 1, 0, 'C', '0', '0', 'acq:domain:list', 'link', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2003, '域名管理', 0, 7, 'domain', 'acq/domain/index', '', '', 1, 0, 'C', '0', '0', 'acq:domain:list', 'link', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2003 OR (perms <> '' AND perms = 'acq:domain:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2004, '支付商户', 2000, 4, 'merchant', 'acq/merchant/index', '', '', 1, 0, 'C', '0', '0', 'acq:merchant:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2004, '支付商户', 0, 8, 'merchant', 'acq/merchant/index', '', '', 1, 0, 'C', '0', '0', 'acq:merchant:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2004 OR (perms <> '' AND perms = 'acq:merchant:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2005, '企业微信配置', 2000, 5, 'wecom', 'acq/wecom/index', '', '', 1, 0, 'C', '0', '0', 'acq:wecom:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2005, '企业微信配置', 0, 9, 'wecom', 'acq/wecom/index', '', '', 1, 0, 'C', '0', '0', 'acq:wecom:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2005 OR (perms <> '' AND perms = 'acq:wecom:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2006, '承接路由', 2000, 6, 'route', 'acq/route/index', '', '', 1, 0, 'C', '0', '0', 'acq:route:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2006, '承接路由', 0, 10, 'route', 'acq/route/index', '', '', 1, 0, 'C', '0', '0', 'acq:route:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2006 OR (perms <> '' AND perms = 'acq:route:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2007, '广告账户', 2000, 7, 'ad', 'acq/ad/index', '', '', 1, 0, 'C', '0', '0', 'acq:ad:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2007, '广告账户', 0, 11, 'ad', 'acq/ad/index', '', '', 1, 0, 'C', '0', '0', 'acq:ad:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2007 OR (perms <> '' AND perms = 'acq:ad:list'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2008, '付费报告', 2000, 8, 'report', 'acq/report/index', '', '', 1, 0, 'C', '0', '0', 'acq:report:query', 'document', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2008, '付费报告', 0, 12, 'report', 'acq/report/index', '', '', 1, 0, 'C', '0', '0', 'acq:report:query', 'document', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2008 OR (perms <> '' AND perms = 'acq:report:query'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-SELECT 2009, '业务查询', 2000, 9, 'business', 'acq/business/index', '', '', 1, 0, 'C', '0', '0', 'acq:order:query', 'documentation', 'admin', sysdate(), '', NULL, '投放后台'
+SELECT 2009, '业务查询', 0, 13, 'business', 'acq/business/index', '', '', 1, 0, 'C', '0', '0', 'acq:order:query', 'documentation', 'admin', sysdate(), '', NULL, '投放后台'
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2009 OR (perms <> '' AND perms = 'acq:order:query'));
 INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
@@ -967,5 +963,12 @@ INSERT INTO sys_menu
     (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 SELECT 2904, '全额退款及查单', 2009, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:order:refund', '#', 'admin', sysdate(), '', NULL, ''
 WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2904 OR perms = 'acq:order:refund');
+-- 已有库把原二级页面升为一级，并去掉「投放管理」目录。按钮仍挂在各自页面下。
+UPDATE sys_menu SET parent_id = 0, order_num = CASE menu_id
+    WHEN 2001 THEN 5 WHEN 2002 THEN 6 WHEN 2003 THEN 7 WHEN 2004 THEN 8 WHEN 2005 THEN 9
+    WHEN 2006 THEN 10 WHEN 2007 THEN 11 WHEN 2008 THEN 12 WHEN 2009 THEN 13 ELSE order_num END
+WHERE menu_id BETWEEN 2001 AND 2009;
+DELETE FROM sys_role_menu WHERE menu_id = 2000;
+DELETE FROM sys_menu WHERE menu_id = 2000;
 -- END ACQ ADMIN MENU
 

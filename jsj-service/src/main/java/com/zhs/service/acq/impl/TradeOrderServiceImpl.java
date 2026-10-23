@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.zhs.common.exception.BusinessException;
 import com.zhs.service.acq.AcquisitionCodes;
 import com.zhs.service.acq.TradeOrderService;
+import com.zhs.service.acq.report.OrderReportSnapshot;
 import com.zhs.service.mapper.acq.DomainMerchantMapper;
 import com.zhs.service.mapper.acq.TradeOrderMapper;
 import com.zhs.service.model.acq.DomainMerchant;
@@ -24,7 +25,9 @@ public class TradeOrderServiceImpl implements TradeOrderService {
 
     @Resource
     private DomainMerchantMapper domainMerchantMapper;
-    @Resource private com.zhs.service.acq.report.OrderReportSnapshot reportSnapshot;
+
+    @Resource
+    private OrderReportSnapshot reportSnapshot;
 
     @Override
     @Transactional(transactionManager = "acqTransactionManager", rollbackFor = Exception.class)

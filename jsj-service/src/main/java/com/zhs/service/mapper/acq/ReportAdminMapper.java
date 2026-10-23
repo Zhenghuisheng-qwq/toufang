@@ -2,9 +2,12 @@ package com.zhs.service.mapper.acq;
 
 import com.zhs.service.acq.report.ReportAdminView;
 import com.zhs.service.model.acq.PostPayTask;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface ReportAdminMapper {
+
     @Select("""
         SELECT o.order_no,o.pay_status,o.report_template_id AS template_id,
                o.report_template_version_id AS template_version_id,r.id AS report_id,r.status AS report_status,
@@ -27,5 +30,5 @@ public interface ReportAdminMapper {
         WHERE id=#{id} AND task_type=1 AND is_delete=0 AND lease_version=#{version}
           AND (status IN (0,3,4) OR (status=1 AND lease_until<=CURRENT_TIMESTAMP))
         """)
-    int claimRetry(@Param("id") Long id,@Param("version") Long version,@Param("owner") String owner);
+    int claimRetry(@Param("id") Long id, @Param("version") Long version, @Param("owner") String owner);
 }

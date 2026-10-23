@@ -11,6 +11,8 @@ spring:
       - classpath:application-common.yml
       - optional:file:./.local/application-business.yml
       - optional:file:../.local/application-business.yml
+      - optional:file:./.local/application-h5-local.yml
+      - optional:file:../.local/application-h5-local.yml
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
