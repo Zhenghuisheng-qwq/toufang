@@ -1,0 +1,1 @@
+<template><header class="brand"><span class="brand-mark" aria-hidden="true">叶</span><span>个人专属报告</span></header><main><router-view :key="$route.fullPath" /></main><footer>资料仅用于本次报告服务</footer></template>

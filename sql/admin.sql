@@ -723,3 +723,249 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb default charset=utf8mb4 auto_increment=1 comment = '代码生成业务表字段';
+
+-- BEGIN ACQ ADMIN MENU
+-- 投放后台菜单。只追加 sys_menu，不删除、不改已有菜单，也不自动授予角色。
+-- 不要为了执行本段而重跑本文件前面的 DROP TABLE。
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2000, '投放管理', 0, 5, 'acq', NULL, '', '', 1, 0, 'M', '0', '0', '', 'guide', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2000 OR (perms <> '' AND perms = ''));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2001, '落地页管理', 2000, 1, 'landing', 'acq/landing/index', '', '', 1, 0, 'C', '0', '0', 'acq:landing:list', 'form', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2001 OR (perms <> '' AND perms = 'acq:landing:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2002, '报告模板', 2000, 2, 'template', 'acq/template/index', '', '', 1, 0, 'C', '0', '0', 'acq:template:list', 'education', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2002 OR (perms <> '' AND perms = 'acq:template:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2003, '域名管理', 2000, 3, 'domain', 'acq/domain/index', '', '', 1, 0, 'C', '0', '0', 'acq:domain:list', 'link', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2003 OR (perms <> '' AND perms = 'acq:domain:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2004, '支付商户', 2000, 4, 'merchant', 'acq/merchant/index', '', '', 1, 0, 'C', '0', '0', 'acq:merchant:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2004 OR (perms <> '' AND perms = 'acq:merchant:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2005, '企业微信配置', 2000, 5, 'wecom', 'acq/wecom/index', '', '', 1, 0, 'C', '0', '0', 'acq:wecom:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2005 OR (perms <> '' AND perms = 'acq:wecom:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2006, '承接路由', 2000, 6, 'route', 'acq/route/index', '', '', 1, 0, 'C', '0', '0', 'acq:route:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2006 OR (perms <> '' AND perms = 'acq:route:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2007, '广告账户', 2000, 7, 'ad', 'acq/ad/index', '', '', 1, 0, 'C', '0', '0', 'acq:ad:list', '#', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2007 OR (perms <> '' AND perms = 'acq:ad:list'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2008, '付费报告', 2000, 8, 'report', 'acq/report/index', '', '', 1, 0, 'C', '0', '0', 'acq:report:query', 'document', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2008 OR (perms <> '' AND perms = 'acq:report:query'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2009, '业务查询', 2000, 9, 'business', 'acq/business/index', '', '', 1, 0, 'C', '0', '0', 'acq:order:query', 'documentation', 'admin', sysdate(), '', NULL, '投放后台'
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2009 OR (perms <> '' AND perms = 'acq:order:query'));
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2101, '落地页查询', 2001, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2101 OR perms = 'acq:landing:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2102, '落地页新增', 2001, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2102 OR perms = 'acq:landing:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2103, '落地页修改', 2001, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2103 OR perms = 'acq:landing:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2104, '落地页删除', 2001, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2104 OR perms = 'acq:landing:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2105, '落地页启停', 2001, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2105 OR perms = 'acq:landing:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2106, '落地页预览', 2001, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:landing:preview', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2106 OR perms = 'acq:landing:preview');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2201, '模板查询', 2002, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2201 OR perms = 'acq:template:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2202, '模板新增', 2002, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2202 OR perms = 'acq:template:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2203, '模板修改', 2002, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2203 OR perms = 'acq:template:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2204, '模板删除', 2002, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2204 OR perms = 'acq:template:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2205, '模板启停', 2002, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2205 OR perms = 'acq:template:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2206, '模板发布', 2002, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:publish', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2206 OR perms = 'acq:template:publish');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2207, '模板预览', 2002, 7, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:template:preview', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2207 OR perms = 'acq:template:preview');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2301, '域名查询', 2003, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2301 OR perms = 'acq:domain:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2302, '域名新增', 2003, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2302 OR perms = 'acq:domain:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2303, '域名修改', 2003, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2303 OR perms = 'acq:domain:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2304, '域名删除', 2003, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2304 OR perms = 'acq:domain:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2305, '域名启停', 2003, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2305 OR perms = 'acq:domain:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2306, '域名关联', 2003, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:domain:link', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2306 OR perms = 'acq:domain:link');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2401, '商户查询', 2004, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2401 OR perms = 'acq:merchant:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2402, '商户新增', 2004, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2402 OR perms = 'acq:merchant:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2403, '商户编辑', 2004, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2403 OR perms = 'acq:merchant:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2404, '商户删除', 2004, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2404 OR perms = 'acq:merchant:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2405, '商户启停', 2004, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2405 OR perms = 'acq:merchant:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2406, '商户版本', 2004, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:version', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2406 OR perms = 'acq:merchant:version');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2407, '商户敏感引用', 2004, 7, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:merchant:secret', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2407 OR perms = 'acq:merchant:secret');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2501, '企微查询', 2005, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2501 OR perms = 'acq:wecom:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2502, '企微新增', 2005, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2502 OR perms = 'acq:wecom:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2503, '企微编辑', 2005, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2503 OR perms = 'acq:wecom:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2504, '企微删除', 2005, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2504 OR perms = 'acq:wecom:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2505, '企微启停', 2005, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2505 OR perms = 'acq:wecom:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2506, '企微敏感引用', 2005, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:wecom:secret', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2506 OR perms = 'acq:wecom:secret');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2601, '路由查询', 2006, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2601 OR perms = 'acq:route:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2602, '路由新增', 2006, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2602 OR perms = 'acq:route:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2603, '路由编辑', 2006, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2603 OR perms = 'acq:route:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2604, '路由删除', 2006, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2604 OR perms = 'acq:route:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2605, '路由切换', 2006, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:switch', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2605 OR perms = 'acq:route:switch');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2606, '路由预览', 2006, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:route:preview', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2606 OR perms = 'acq:route:preview');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2701, '广告查询', 2007, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2701 OR perms = 'acq:ad:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2702, '广告新增', 2007, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:add', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2702 OR perms = 'acq:ad:add');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2703, '广告编辑', 2007, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:edit', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2703 OR perms = 'acq:ad:edit');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2704, '广告删除', 2007, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:remove', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2704 OR perms = 'acq:ad:remove');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2705, '广告启停', 2007, 5, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:status', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2705 OR perms = 'acq:ad:status');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2706, '广告敏感引用', 2007, 6, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:ad:secret', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2706 OR perms = 'acq:ad:secret');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2802, '查看正文', 2008, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:report:content', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2802 OR perms = 'acq:report:content');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2803, '受控补生成', 2008, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:report:retry', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2803 OR perms = 'acq:report:retry');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2901, '线索查询', 2009, 1, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:lead:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2901 OR perms = 'acq:lead:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2902, '转化查询', 2009, 2, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:conversion:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2902 OR perms = 'acq:conversion:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2903, '业务统计', 2009, 3, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:stats:query', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2903 OR perms = 'acq:stats:query');
+INSERT INTO sys_menu
+    (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+SELECT 2904, '全额退款及查单', 2009, 4, '', '', '', '', 1, 0, 'F', '0', '0', 'acq:order:refund', '#', 'admin', sysdate(), '', NULL, ''
+WHERE NOT EXISTS (SELECT 1 FROM sys_menu WHERE menu_id = 2904 OR perms = 'acq:order:refund');
+-- END ACQ ADMIN MENU
+

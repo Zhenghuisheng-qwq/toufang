@@ -1,9 +1,0 @@
-<!--pages/index/index.wxml-->
-<view class="container">
-  <view class="profile">
-    <view class="avatar" wx:if="{{ !avatar }}">{{ nickname ? nickname.substring(0, 1) : '?' }}</view>
-    <image class="avatar avatar-img" wx:else src="{{ avatar }}" mode="aspectFill"/>
-    <view class="nickname">{{ nickname }}</view>
-  </view>
-  <button class="logout-btn" bindtap="onLogout">退出登录</button>
-</view>

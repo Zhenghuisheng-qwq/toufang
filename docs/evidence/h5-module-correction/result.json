@@ -1,0 +1,25 @@
+{
+  "source": "jsj-mini-app/dist",
+  "realApi": "read-only missing-page response",
+  "browser": "Chrome",
+  "mockedBusinessResponses": true,
+  "checks": [
+    "real Mini read-only missing-page response through same-origin proxy",
+    "no horizontal overflow at 390",
+    "no horizontal overflow at 768",
+    "no horizontal overflow at 1024",
+    "no horizontal overflow at 1440",
+    "empty form blocked before submission",
+    "double submit creates one frontend order request",
+    "optional birth time remains absent",
+    "Baidu click parameter preserved",
+    "order request contains no client price",
+    "refresh and return restore existing order",
+    "disabled payment preserves order",
+    "report visible independently of unavailable teacher",
+    "refund state hides report",
+    "credential error exposes no report",
+    "unavailable page has no submission form",
+    "no browser runtime exceptions"
+  ]
+}

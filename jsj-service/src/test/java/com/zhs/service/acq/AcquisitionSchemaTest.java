@@ -28,7 +28,7 @@ class AcquisitionSchemaTest {
 
     @Test
     void sqlIsAdditiveAndMapsOntoEntities() throws Exception {
-        String sql = Files.readString(sqlFile());
+        String sql = h5Schema(Files.readString(sqlFile()));
         String executable = sql.replaceAll("(?m)--.*$", "");
         String lower = executable.toLowerCase();
         assertFalse(lower.contains("drop database"));
@@ -109,11 +109,20 @@ class AcquisitionSchemaTest {
     }
 
     private static Path sqlFile() {
-        Path direct = Path.of("sql", "acquisition.sql");
+        Path direct = Path.of("sql", "mini.sql");
         if (Files.exists(direct)) {
             return direct;
         }
-        return Path.of("..", "sql", "acquisition.sql");
+        return Path.of("..", "sql", "mini.sql");
+    }
+
+    private static String h5Schema(String sql) {
+        int begin = sql.indexOf("-- BEGIN H5 SCHEMA");
+        int end = sql.indexOf("-- END H5 SCHEMA");
+        if (begin < 0 || end < begin) {
+            throw new IllegalStateException("mini.sql 缺少 H5 SCHEMA 段");
+        }
+        return sql.substring(begin, end);
     }
 
     private static String className(String table) {

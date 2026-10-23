@@ -2,7 +2,7 @@
 
 ## Project Context
 
-This is a modern Java SaaS scaffolding with Spring Boot 3 + JDK 17 backend and multi-platform frontends (Vue 3 Admin UI, UniApp, WeChat Mini Program).
+This is a modern Java SaaS scaffolding with Spring Boot 3 + JDK 21 backend and Vue 3 frontends: jsj-admin-ui (Admin) and jsj-mini-app (the only H5 frontend for jsj-mini). jsj-h5, jsj-uni-app and root generator remain deleted. Follow AGENTS.md for current boundaries.
 
 ## AI Agent Skills
 

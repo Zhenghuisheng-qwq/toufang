@@ -32,9 +32,11 @@ Admin 示例使用内存 Quartz 且关闭自动启动，启动前仍需核对 Sy
 
 生产 HTTPS 静态资源与 /api 同域。参考 [Nginx 示例](h5-nginx.conf.example) 设置可信转发头，并在 Mini 显式开启 forwarded-headers 处理；不能将信任转发头的后端直接暴露公网。各域名必须分别完成 H5 支付、公众号网页授权和平台回调的授权配置。
 
+H5 唯一工程为 jsj-mini-app，进入该目录使用 npm ci --ignore-scripts、npm run dev、npm run typecheck、npm run build。产物为 jsj-mini-app/dist。
+
 H5 开发端口 5174，默认代理 Mini 8881。业务 Host 仍需已授权域名配置；后台 /dev-api 代理 Admin 8080。生产不使用测试端口 63400–63404。
 
-本轮实际执行 acquisition_business_flow.sql、acq_menu_business_flow.sql。acquisition.sql 已同步字段，但没有在已有库执行；新环境先核对初始化及增量依赖。菜单不分配真实角色。
+历史业务轮次已执行 acquisition_business_flow.sql、acq_menu_business_flow.sql；本次前端归属纠正未执行 SQL。acquisition.sql 已同步字段，但没有在已有库执行；新环境先核对初始化及增量依赖。菜单不分配真实角色。
 
 DDL 自动提交，执行前备份、比对字段类型和唯一索引。IF NOT EXISTS 不能证明其他环境已有结构正确。不得盲目执行旧脚本固定 ry-vue 的语句。
 

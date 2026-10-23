@@ -6,7 +6,7 @@ server {
     server_name AUTHORIZED_DOMAIN;
     ssl_certificate /configured/tls/fullchain.pem;
     ssl_certificate_key /configured/tls/private.key;
-    root /configured/jsj-h5/dist;
+    root /configured/jsj-mini-app/dist;
     add_header Referrer-Policy no-referrer always;
     location / {
         try_files $uri $uri/ /index.html;

@@ -233,7 +233,7 @@ class AcquisitionConstraintJdbcTest {
 
     @Test
     void scriptFileExistsForTheIsolatedDatabase() {
-        assertTrue(Files.exists(Path.of("..", "sql", "acquisition.sql")) || Files.exists(Path.of("sql", "acquisition.sql")));
+        assertTrue(Files.exists(Path.of("..", "sql", "mini.sql")) || Files.exists(Path.of("sql", "mini.sql")));
         assertFalse(firstNonBlank(System.getProperty("acq.jdbc.url"), System.getenv("ACQ_JDBC_URL")).contains("pupu"));
     }
 

@@ -1,6 +1,8 @@
-# jsj-mini - 小程序 / IM 后端
+# jsj-mini — H5 后端（保留移动端 / IM 能力）
 
-面向 `jsj-mini-app`（原生微信）和 `jsj-uni-app`（UniApp）的统一后端，内置基于 Netty 的 IM WebSocket。
+面向唯一 H5 前端 `jsj-mini-app`。H5 使用 `/api/h5` 同源 Cookie；既有移动端 Bearer Token 和 IM 能力独立保留。jsj-h5、jsj-uni-app、根 generator 保持删除。
+
+H5 接口与开关说明见根 README、config-examples/README；本次仅纠正前端归属，不重建后端或数据库。
 
 ## 技术栈
 
@@ -20,7 +22,7 @@ mvn spring-boot:run
 ```
 
 端口：
-- HTTP API：`8081`
+- HTTP API：`8881`
 - WebSocket：`9001`（路径 `/ws`）
 
 ## 配置文件
@@ -29,8 +31,8 @@ mvn spring-boot:run
 
 | 环境变量 | 含义 | 默认 |
 |---|---|---|
-| （见 `jsj-service` 的 `application-common.yml`） | 数据库连接 | 192.168.31.48 / pupu / root / 123456 |
-| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Redis | 192.168.31.48 / 6379 / 空 |
+| （见 `jsj-service` 的 `application-common.yml`） | 数据库连接 | BOOT_DB_* 或已忽略本地配置 |
+| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Redis | 本地授权配置，见根配置说明 |
 | `WX_APP_ID` / `WX_APP_SECRET` | 微信小程序 | 占位符 |
 | `IM_ALLOWED_ORIGINS` | WebSocket 允许的 Origin（逗号分隔） | 空=不校验 |
 
