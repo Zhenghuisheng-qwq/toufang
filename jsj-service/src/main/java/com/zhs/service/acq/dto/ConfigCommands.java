@@ -31,7 +31,9 @@ public final class ConfigCommands {
                         Integer sortNo, String remark) { }
     public record AdAccount(Integer platform, String externalAccountId, String accountName,
                             String interfaceMode, String dataSourceId, String payEvent,
-                            String amountUnit, String remark) { }
+                            String amountUnit, String remark, String submitEvent, String addContactEvent) {
+        public AdAccount(Integer platform,String externalAccountId,String accountName,String interfaceMode,String dataSourceId,String payEvent,String amountUnit,String remark){this(platform,externalAccountId,accountName,interfaceMode,dataSourceId,payEvent,amountUnit,remark,null,null);}
+    }
     public record AdSecret(String credentialRef) {
         @Override public String toString() { return "AdSecret[redacted]"; }
     }

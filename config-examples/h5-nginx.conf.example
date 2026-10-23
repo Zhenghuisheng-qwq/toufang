@@ -1,0 +1,26 @@
+# Adapt authorized domain, TLS paths and installed dist path. Do not load as-is.
+# Mini must listen on loopback/private network; do not expose a backend that trusts
+# forwarded headers directly to the Internet. Start with --server.forward-headers-strategy=framework.
+server {
+    listen 443 ssl;
+    server_name AUTHORIZED_DOMAIN;
+    ssl_certificate /configured/tls/fullchain.pem;
+    ssl_certificate_key /configured/tls/private.key;
+    root /configured/jsj-h5/dist;
+    add_header Referrer-Policy no-referrer always;
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    location /api/ {
+        proxy_pass http://127.0.0.1:8881;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Forwarded "";
+        proxy_no_cache 1;
+        # Do not log OAuth code/state, callback signatures or user query parameters.
+        access_log off;
+    }
+}

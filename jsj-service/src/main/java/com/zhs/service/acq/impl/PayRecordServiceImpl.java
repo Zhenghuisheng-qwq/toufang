@@ -28,7 +28,7 @@ public class PayRecordServiceImpl implements PayRecordService {
 
     @Resource
     private TradeOrderService tradeOrderService;
-    @Resource private com.zhs.service.mapper.acq.ReportWorkMapper reportWork;
+    @Resource private com.zhs.service.acq.flow.PaymentConfirmationService confirmations;
 
     @Override
     public PayRecord savePending(PayRecord record) {
@@ -47,41 +47,10 @@ public class PayRecordServiceImpl implements PayRecordService {
     @Transactional(transactionManager = "acqTransactionManager", rollbackFor = Exception.class)
     public boolean markSuccess(String orderNo, String transactionId, String notifyId, Integer amountFen,
                                String mchId, String appId, LocalDateTime successTime) {
-        if (!StringUtils.hasText(transactionId) || !StringUtils.hasText(notifyId) || successTime == null) {
-            throw new BusinessException("支付通知缺少交易号、通知号或成功时间");
-        }
-        TradeOrder order = tradeOrderMapper.selectOne(new LambdaQueryWrapper<TradeOrder>()
-                .eq(TradeOrder::getOrderNo, orderNo));
-        if (order == null) {
-            throw new BusinessException("订单不存在");
-        }
-        if (!order.getMchId().equals(mchId) || !order.getAppId().equals(appId) || !order.getAmountFen().equals(amountFen)) {
-            throw new BusinessException("支付通知与订单锁定的商户、应用或金额不一致");
-        }
-        int rows = payRecordMapper.update(null, new LambdaUpdateWrapper<PayRecord>()
-                .set(PayRecord::getPayStatus, AcquisitionCodes.PAY_SUCCESS)
-                .set(PayRecord::getSuccessOrderNo, orderNo)
-                .set(PayRecord::getTransactionId, transactionId)
-                .set(PayRecord::getNotifyId, notifyId)
-                .set(PayRecord::getWxTradeState, "SUCCESS")
-                .set(PayRecord::getSuccessTime, successTime)
-                .eq(PayRecord::getOrderNo, orderNo)
-                .eq(PayRecord::getPayStatus, AcquisitionCodes.PAY_UNPAID)
-                .isNull(PayRecord::getSuccessOrderNo));
-        if (rows == 1) {
-            if (!tradeOrderService.markPaid(orderNo, successTime)) {
-                throw new BusinessException("订单支付状态未更新");
-            }
-            reportWork.ensureReport(orderNo);
-            return true;
-        }
-        PayRecord existing = payRecordMapper.selectOne(new LambdaQueryWrapper<PayRecord>()
-                .eq(PayRecord::getOrderNo, orderNo));
-        if (existing != null
-                && Integer.valueOf(AcquisitionCodes.PAY_SUCCESS).equals(existing.getPayStatus())
-                && transactionId.equals(existing.getTransactionId())) {
-            return false;
-        }
-        throw new BusinessException("支付记录与已有成功通知冲突");
+        String digest = com.zhs.service.acq.flow.FlowSecurity.hash(String.join("|", orderNo, transactionId, notifyId,
+                String.valueOf(amountFen), mchId, appId, String.valueOf(successTime)));
+        return confirmations.confirm(new com.zhs.service.acq.flow.PaymentConfirmationService.Evidence(
+                com.zhs.service.acq.flow.PaymentConfirmationService.Source.NOTIFY, notifyId, digest,
+                orderNo, transactionId, mchId, appId, amountFen, "CNY", "SUCCESS", successTime));
     }
 }

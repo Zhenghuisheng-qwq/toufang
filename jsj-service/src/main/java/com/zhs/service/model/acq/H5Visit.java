@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @TableName("h5_visit")
 public class H5Visit extends AcqEntity implements Serializable {
 
+    private Long sessionId;
+
     @Serial
     private static final long serialVersionUID = 1L;
 

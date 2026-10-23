@@ -14,6 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @TableName("ad_account")
 public class AdAccount extends AcqEntity implements Serializable {
+    private String eventMap;
     private String interfaceMode;
     private String dataSourceId;
     private String payEvent;

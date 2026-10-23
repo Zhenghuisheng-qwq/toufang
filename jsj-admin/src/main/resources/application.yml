@@ -55,6 +55,10 @@ spring:
     import:
       - classpath:application-common.yml
       - classpath:application-common-admin.yml
+      - optional:file:./.local/application-business.yml
+      - optional:file:../.local/application-business.yml
+      - optional:file:./.local/application-business-admin.yml
+      - optional:file:../.local/application-business-admin.yml
 
   # 资源信息
   messages:

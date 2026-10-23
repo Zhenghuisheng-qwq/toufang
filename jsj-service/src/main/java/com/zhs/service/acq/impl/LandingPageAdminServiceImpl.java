@@ -100,6 +100,7 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
                 .set(LandingPage::getPriceFen, existing.getPriceFen())
                 .set(LandingPage::getSortNo, existing.getSortNo())
                 .set(LandingPage::getReportTemplateId, existing.getReportTemplateId())
+                .set(LandingPage::getAdAccountId, existing.getAdAccountId()).set(LandingPage::getPayMerchantId,existing.getPayMerchantId())
                 .set(LandingPage::getNameEnabled, existing.getNameEnabled())
                 .set(LandingPage::getGenderEnabled, existing.getGenderEnabled())
                 .set(LandingPage::getBirthDateEnabled, existing.getBirthDateEnabled())
@@ -173,6 +174,9 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         landingPageMapper.deleteById(id);
     }
 
+    @jakarta.annotation.Resource private com.zhs.service.mapper.acq.AdAccountMapper adAccounts;
+    @jakarta.annotation.Resource private com.zhs.service.mapper.acq.PayMerchantMapper merchants;
+
     private void apply(LandingPage page, LandingPageSaveCommand command) {
         if (command == null) {
             throw new BusinessException("请填写落地页配置");
@@ -198,6 +202,10 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
             }
         }
         page.setReportTemplateId(command.getReportTemplateId());
+        if(command.getAdAccountId()!=null && adAccounts.lockById(command.getAdAccountId())==null)throw new BusinessException("广告账户不存在");
+        page.setAdAccountId(command.getAdAccountId());
+        if(command.getPayMerchantId()!=null && merchants.lockById(command.getPayMerchantId())==null)throw new BusinessException("支付商户不存在");
+        page.setPayMerchantId(command.getPayMerchantId());
     }
 
     private void replaceAssets(Long pageId, List<LandingAssetCommand> assets, boolean creating) {
@@ -279,7 +287,7 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         row.setPriceYuan(MoneyAmounts.fenToYuan(page.getPriceFen()));
         row.setPublishStatus(page.getPublishStatus());
         row.setSortNo(page.getSortNo());
-        row.setReportTemplateId(page.getReportTemplateId());
+        row.setReportTemplateId(page.getReportTemplateId());row.setAdAccountId(page.getAdAccountId());row.setPayMerchantId(page.getPayMerchantId());
         row.setNameEnabled(page.getNameEnabled());
         row.setGenderEnabled(page.getGenderEnabled());
         row.setBirthDateEnabled(page.getBirthDateEnabled());
@@ -299,7 +307,7 @@ public class LandingPageAdminServiceImpl implements LandingPageAdminService {
         detail.setPriceFen(row.getPriceFen());
         detail.setPublishStatus(row.getPublishStatus());
         detail.setSortNo(row.getSortNo());
-        detail.setReportTemplateId(row.getReportTemplateId());
+        detail.setReportTemplateId(row.getReportTemplateId());detail.setAdAccountId(row.getAdAccountId());detail.setPayMerchantId(row.getPayMerchantId());
         detail.setNameEnabled(row.getNameEnabled());
         detail.setGenderEnabled(row.getGenderEnabled());
         detail.setBirthDateEnabled(row.getBirthDateEnabled());

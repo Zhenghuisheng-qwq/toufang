@@ -62,7 +62,7 @@ public class ReportGenerationServiceImpl implements ReportGenerationService {
     private void complete(Long id,String owner,int status,String error) {
         if(work.finish(id,owner,status,error)!=1) throw new BusinessException("报告任务租约已失效，本次写入回滚");
     }
-    static boolean paid(TradeOrder order,PayRecord pay) {
+    public static boolean paid(TradeOrder order,PayRecord pay) {
         return order!=null && pay!=null && Integer.valueOf(1).equals(order.getPayStatus()) && Integer.valueOf(1).equals(pay.getPayStatus())
                 && pay.getTransactionId()!=null && !pay.getTransactionId().isBlank() && order.getPaidTime()!=null && pay.getSuccessTime()!=null
                 && order.getMchId()!=null && !order.getMchId().isBlank() && order.getAppId()!=null && !order.getAppId().isBlank()

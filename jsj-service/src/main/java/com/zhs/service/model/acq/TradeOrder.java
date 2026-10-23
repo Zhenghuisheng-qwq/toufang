@@ -25,6 +25,14 @@ public class TradeOrder extends AcqEntity implements Serializable {
 
     @Override public String toString() { return "TradeOrder[redacted]"; }
 
+    private Long sessionId;
+    private String adSnapshot;
+    private Integer entryType;
+    private String entryLinkId;
+    private String entryLinkUrl;
+    private String pageTitle;
+    private String returnPath;
+
     @Serial
     private static final long serialVersionUID = 1L;
 

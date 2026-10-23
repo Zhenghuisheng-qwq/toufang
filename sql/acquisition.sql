@@ -25,6 +25,8 @@
 -- 落地页
 -- ========================================
 CREATE TABLE IF NOT EXISTS `landing_page` (
+  `pay_merchant_id` bigint NULL COMMENT '页面指定支付商户，仍必须满足当前域名授权',
+  `ad_account_id` bigint DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `title` varchar(128) NOT NULL COMMENT '页面标题',
   `headline` varchar(255) DEFAULT NULL COMMENT '主宣传文案',
@@ -191,6 +193,13 @@ CREATE TABLE IF NOT EXISTS `pay_merchant_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信支付配置版本';
 
 CREATE TABLE IF NOT EXISTS `trade_order` (
+  `ad_snapshot` text NULL COMMENT '下单时冻结广告账户接口和三类事件映射，不含凭据',
+  `return_path` varchar(255) DEFAULT NULL,
+  `page_title` varchar(128) DEFAULT NULL,
+  `entry_link_url` varchar(512) DEFAULT NULL,
+  `entry_link_id` varchar(128) DEFAULT NULL,
+  `entry_type` tinyint DEFAULT NULL,
+  `session_id` bigint DEFAULT NULL,
   `report_template_id` bigint DEFAULT NULL,
   `report_template_version_id` bigint DEFAULT NULL,
   `report_input_version` int DEFAULT NULL,
@@ -232,6 +241,12 @@ CREATE TABLE IF NOT EXISTS `trade_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='投放订单。快照列创建后不可因配置切换而改写';
 
 CREATE TABLE IF NOT EXISTS `pay_record` (
+  `attempt_until` datetime DEFAULT NULL,
+  `attempt_owner` varchar(64) DEFAULT NULL,
+  `attempt_state` varchar(24) NOT NULL DEFAULT 'NEW',
+  `payment_url` varchar(2048) DEFAULT NULL,
+  `evidence_hash` char(64) DEFAULT NULL,
+  `confirmation_source` varchar(16) DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `order_no` varchar(32) NOT NULL COMMENT '订单号',
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号，首期与订单号相同',
@@ -356,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `wecom_contact_entry` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_entry_order_no` (`order_no`),
   UNIQUE KEY `uk_state_token` (`state_token`),
-  UNIQUE KEY `uk_link_id` (`link_id`),
+  KEY `idx_shared_link` (`link_id`),
   KEY `idx_entry_corp` (`corp_id`, `entry_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企微获客入口。联系我与获客助手字段互斥';
 
@@ -433,6 +448,7 @@ CREATE TABLE IF NOT EXISTS `wecom_contact_event` (
 -- 广告归因。三平台点击列分开，未确认参数放在原始查询串。
 -- ========================================
 CREATE TABLE IF NOT EXISTS `ad_account` (
+  `event_map` varchar(255) DEFAULT NULL COMMENT '资料提交与加老师事件映射',
   `interface_mode` varchar(32) NOT NULL DEFAULT 'UNCONFIRMED',
   `data_source_id` varchar(128) DEFAULT NULL,
   `pay_event` varchar(128) DEFAULT NULL,
@@ -483,8 +499,17 @@ CREATE TABLE IF NOT EXISTS `ad_click` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='广告点击记录';
 
 CREATE TABLE IF NOT EXISTS `ad_conversion` (
+  `lease_version` bigint NOT NULL DEFAULT 0,
+  `lease_until` datetime DEFAULT NULL,
+  `lease_owner` varchar(64) DEFAULT NULL,
+  `next_run_at` datetime DEFAULT NULL,
+  `delivery_snapshot` text,
+  `event_time` datetime DEFAULT NULL,
+  `source_id` bigint DEFAULT NULL,
+  `source_type` varchar(24) DEFAULT NULL,
+  `event_key` varchar(128) DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `order_no` varchar(32) NOT NULL COMMENT '订单号',
+  `order_no` varchar(32) DEFAULT NULL COMMENT '订单号',
   `platform` tinyint NOT NULL COMMENT '平台：1=TENCENT 2=BAIDU 3=KUAISHOU',
   `event_type` tinyint NOT NULL COMMENT '转化类型：1=支付',
   `ad_account_id` bigint DEFAULT NULL COMMENT '广告账户ID',
@@ -500,6 +525,7 @@ CREATE TABLE IF NOT EXISTS `ad_conversion` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_delete` tinyint NOT NULL DEFAULT 0 COMMENT '删除标志：0=未删除 1=已删除',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_conversion_event` (`event_key`),
   UNIQUE KEY `uk_order_platform_event` (`order_no`, `platform`, `event_type`),
   KEY `idx_conversion_click` (`ad_click_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='广告转化回传';
@@ -508,6 +534,7 @@ CREATE TABLE IF NOT EXISTS `ad_conversion` (
 -- H5 访问与线索
 -- ========================================
 CREATE TABLE IF NOT EXISTS `h5_visit` (
+  `session_id` bigint DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `visit_no` varchar(32) NOT NULL COMMENT '访问号',
   `landing_page_id` bigint DEFAULT NULL COMMENT '落地页ID',
@@ -525,6 +552,7 @@ CREATE TABLE IF NOT EXISTS `h5_visit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='H5访问记录';
 
 CREATE TABLE IF NOT EXISTS `h5_lead` (
+  `session_id` bigint DEFAULT NULL,
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `visit_id` bigint DEFAULT NULL COMMENT '访问记录ID',
   `landing_page_id` bigint DEFAULT NULL COMMENT '落地页ID',

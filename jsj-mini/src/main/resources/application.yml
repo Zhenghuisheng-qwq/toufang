@@ -7,7 +7,10 @@ spring:
 
   # 数据源 / Redis / MyBatis-Plus 由 jsj-service 统一提供（文件名不可与宿主 application.yml 同名）
   config:
-    import: classpath:application-common.yml
+    import:
+      - classpath:application-common.yml
+      - optional:file:./.local/application-business.yml
+      - optional:file:../.local/application-business.yml
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -24,6 +27,8 @@ spring:
 logging:
   level:
     com.zhs: info
+    me.chanjar.weixin: off
+    com.wechat.pay.java: off
 
 # 微信小程序（mini 专属）
 wx:

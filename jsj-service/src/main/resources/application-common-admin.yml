@@ -21,15 +21,15 @@ spring:
       web-stat-filter:
         enabled: true
       stat-view-servlet:
-        enabled: true
+        enabled: false
         allow:
         url-pattern: /druid/*
-        login-username: ruoyi
-        login-password: 123456
+        login-username: ${DRUID_MONITOR_USERNAME:}
+        login-password: ${DRUID_MONITOR_PASSWORD:}
       filter:
         stat:
           enabled: true
-          log-slow-sql: true
+          log-slow-sql: false
           slow-sql-millis: 1000
           merge-sql: true
         wall:

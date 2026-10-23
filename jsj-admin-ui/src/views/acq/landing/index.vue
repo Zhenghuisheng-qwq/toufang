@@ -98,6 +98,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="支付商户ID"><el-input v-model="form.payMerchantId" placeholder="域名关联多个商户时必须指定" /></el-form-item>
+            <el-form-item label="广告账户ID"><el-input v-model="form.adAccountId" placeholder="选填，填写广告账户配置中的 ID" /></el-form-item>
             <el-form-item label="报告模板">
               <el-select v-model="form.reportTemplateId" clearable filterable remote :remote-method="loadTemplates" placeholder="草稿可暂不绑定" style="width: 100%">
                 <el-option v-for="t in templates" :key="t.id" :value="t.id" :label="t.templateName + ' / ' + (t.status === 1 ? '启用' : '未启用') + ' / ' + (t.complete ? '已发布 v' + t.versionNo : '配置不完整')" />
@@ -196,6 +198,8 @@ const headers = ref({ Authorization: 'Bearer ' + getToken() })
 
 const queryParams = reactive({ pageNum: 1, pageSize: 10, title: undefined as string | undefined, publishStatus: undefined as number | undefined })
 const form = reactive({
+  adAccountId: null as string | null,
+  payMerchantId: null as string | null,
   reportTemplateId: null as string | null,
   id: undefined as string | undefined,
   title: '',
@@ -261,6 +265,8 @@ function handleSelectionChange(selection: any[]) {
   multiple.value = selection.length === 0
 }
 function resetFormModel() {
+  form.payMerchantId = null
+  form.adAccountId = null
   form.reportTemplateId = null
   form.id = undefined
   form.title = ''
@@ -283,6 +289,8 @@ function handleAdd() {
   open.value = true
 }
 function fillForm(data: any) {
+  form.payMerchantId = data.payMerchantId == null ? null : String(data.payMerchantId)
+  form.adAccountId = data.adAccountId == null ? null : String(data.adAccountId)
   form.reportTemplateId = data.reportTemplateId == null ? null : String(data.reportTemplateId)
   form.id = data.id == null ? undefined : String(data.id)
   form.title = data.title || ''
@@ -309,6 +317,8 @@ function handleUpdate(row: any = {}) {
 function payload() {
   return {
     reportTemplateId: form.reportTemplateId || null,
+    adAccountId: form.adAccountId || null,
+    payMerchantId: form.payMerchantId || null,
     title: form.title,
     headline: form.headline,
     sellingText: form.sellingText,

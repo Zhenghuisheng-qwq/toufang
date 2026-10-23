@@ -1,0 +1,61 @@
+# Copy to .local/application-business.yml; never commit actual credentials.
+# Loaded automatically when running from repository root or a module directory.
+spring:
+  datasource:
+    url: ${BOOT_DB_URL}
+    username: ${BOOT_DB_USERNAME}
+    password: ${BOOT_DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+acq:
+  payment:
+    enabled: false
+  oauth:
+    enabled: false
+    # wxAUTHORIZED_APP_ID:
+    #   secret-ref: ref:official_secret
+  refund:
+    enabled: false
+    entitlement-policy: UNCONFIRMED # FULL_REVOKE only after business approval
+  report:
+    worker:
+      enabled: false
+      since: "" # ISO local time, e.g. 2026-10-23T12:00:00; choose a reviewed cutoff
+  post-payment:
+    worker:
+      enabled: false
+      since: ""
+  ads:
+    worker:
+      enabled: false
+      since: ""
+  wecom:
+    callbacks:
+      enabled: false
+    outbound:
+      enabled: false
+    automation:
+      worker:
+        enabled: false
+        since: ""
+      # AUTHORIZED_CORP_ID:
+      #   remark-policy: EMPTY_ONLY
+      #   remark: approved business text
+      #   tag-ids: approved_tag_id
+  # secrets:
+  #   merchant_private_key: ${PAY_PRIVATE_KEY_PEM}
+  #   merchant_apiv3_key: ${PAY_API_V3_KEY}
+  #   platform_public_key: ${PAY_PLATFORM_PUBLIC_KEY_PEM}
+  #   official_secret: ${OFFICIAL_ACCOUNT_SECRET}
+  #   wecom_contact: ${WECOM_CONTACT_SECRET}
+  #   wecom_token: ${WECOM_CALLBACK_TOKEN}
+  #   wecom_aes: ${WECOM_CALLBACK_AES_KEY}
+  #   ads_access: ${ADS_ACCESS_TOKEN}
+logging:
+  level:
+    me.chanjar.weixin: off
+    com.wechat.pay.java: off

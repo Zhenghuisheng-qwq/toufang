@@ -15,6 +15,8 @@ public class LandingPageSaveCommand {
     private Integer publishStatus;
     private Integer sortNo;
     private Long reportTemplateId;
+    private Long adAccountId;
+    private Long payMerchantId;
     private Integer nameEnabled;
     private Integer genderEnabled;
     private Integer birthDateEnabled;

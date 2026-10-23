@@ -24,6 +24,10 @@ public final class LandingViews {
         private Integer sortNo;
         @JsonSerialize(using = ToStringSerializer.class)
         private Long reportTemplateId;
+        @JsonSerialize(using = ToStringSerializer.class)
+        private Long adAccountId;
+        @JsonSerialize(using = ToStringSerializer.class)
+        private Long payMerchantId;
         private Integer nameEnabled;
         private Integer genderEnabled;
         private Integer birthDateEnabled;
@@ -53,6 +57,10 @@ public final class LandingViews {
         private Integer sortNo;
         @JsonSerialize(using = ToStringSerializer.class)
         private Long reportTemplateId;
+        @JsonSerialize(using = ToStringSerializer.class)
+        private Long adAccountId;
+        @JsonSerialize(using = ToStringSerializer.class)
+        private Long payMerchantId;
         private Integer nameEnabled;
         private Integer genderEnabled;
         private Integer birthDateEnabled;

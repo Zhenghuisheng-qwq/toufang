@@ -16,10 +16,13 @@ import java.util.UUID;
 public class ReportWorker {
     @Resource private ReportWorkMapper work;
     @Resource private ReportGenerationService generation;
+    @Resource private com.zhs.service.mapper.acq.BusinessFlowMapper scopedWork;
+    @org.springframework.beans.factory.annotation.Value("${acq.report.worker.since:}") private String since;
 
     @Scheduled(fixedDelayString="${acq.report.worker.delay-ms:5000}")
     public void poll() {
-        for (Long id : work.candidates()) {
+        if(since==null||since.isBlank())return;
+        for (Long id : scopedWork.candidates(1,java.time.LocalDateTime.parse(since))) {
             String owner = UUID.randomUUID().toString();
             if (work.claim(id,owner) != 1) continue;
             var task = work.task(id);

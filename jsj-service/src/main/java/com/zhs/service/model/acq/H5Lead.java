@@ -17,6 +17,9 @@ import java.time.LocalTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName("h5_lead")
 public class H5Lead extends AcqEntity implements Serializable {
+    @Override public String toString(){return "H5Lead[redacted]";}
+
+    private Long sessionId;
 
     @Serial
     private static final long serialVersionUID = 1L;

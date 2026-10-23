@@ -33,7 +33,9 @@ public class AcqPersistenceConfiguration {
     @ConditionalOnProperty(prefix = "acq.datasource", name = "url")
     @ConfigurationProperties(prefix = "acq.datasource")
     public DataSource acqDataSource() {
-        return new DruidDataSource();
+        DruidDataSource source=new DruidDataSource();
+        source.setConnectionInitSqls(java.util.List.of("SET time_zone = '+08:00'"));
+        return source;
     }
 
     @Bean(name = "acqTransactionManager")

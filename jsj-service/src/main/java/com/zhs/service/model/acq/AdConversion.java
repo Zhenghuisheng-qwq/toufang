@@ -16,6 +16,16 @@ import java.time.LocalDateTime;
 @TableName("ad_conversion")
 public class AdConversion extends AcqEntity implements Serializable {
 
+    private String eventKey;
+    private String sourceType;
+    private Long sourceId;
+    private LocalDateTime eventTime;
+    private String deliverySnapshot;
+    private LocalDateTime nextRunAt;
+    private String leaseOwner;
+    private LocalDateTime leaseUntil;
+    private Long leaseVersion;
+
     @Serial
     private static final long serialVersionUID = 1L;
 

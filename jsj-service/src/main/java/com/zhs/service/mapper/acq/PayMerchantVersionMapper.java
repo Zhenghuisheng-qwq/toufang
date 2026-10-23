@@ -9,4 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface PayMerchantVersionMapper extends BaseMapper<PayMerchantVersion> {
+    @org.apache.ibatis.annotations.Select("SELECT * FROM pay_merchant_version WHERE id=#{id} AND is_delete=0 FOR UPDATE")
+    PayMerchantVersion lockById(Long id);
 }

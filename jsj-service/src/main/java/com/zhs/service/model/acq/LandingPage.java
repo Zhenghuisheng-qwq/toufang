@@ -15,6 +15,9 @@ import java.io.Serializable;
 @TableName("landing_page")
 public class LandingPage extends AcqEntity implements Serializable {
 
+    private Long adAccountId;
+    private Long payMerchantId;
+
     @Serial
     private static final long serialVersionUID = 1L;
 

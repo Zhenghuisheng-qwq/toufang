@@ -59,7 +59,9 @@ class AcquisitionSchemaTest {
         assertTrue(sql.contains("UNIQUE KEY `uk_order_task`"));
         assertTrue(sql.contains("UNIQUE KEY `uk_corp_external`"));
         assertTrue(sql.contains("UNIQUE KEY `uk_state_token`"));
-        assertTrue(sql.contains("UNIQUE KEY `uk_link_id`"));
+        assertFalse(sql.contains("UNIQUE KEY `uk_link_id`"), "获客链接允许多个订单共享");
+        assertTrue(sql.contains("KEY `idx_shared_link` (`link_id`)"));
+        assertTrue(sql.contains("UNIQUE KEY `uk_conversion_event` (`event_key`)"));
         assertTrue(sql.contains("UNIQUE KEY `uk_domain_merchant`"));
         assertTrue(sql.contains("`lease_owner`"));
         assertTrue(sql.contains("`lease_until`"));

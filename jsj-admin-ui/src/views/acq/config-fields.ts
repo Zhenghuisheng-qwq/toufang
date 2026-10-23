@@ -15,7 +15,7 @@ export const fields: Record<string, Field[]> = {
     select('authMode', '授权模式', [['UNCONFIRMED', '待确认'], ['SELF_BUILT', '自建应用'], ['THIRD_PARTY', '第三方授权']]), text('remark', '备注', 255)],
   ad: [select('platform', '平台', [[1, '腾讯广告'], [2, '百度'], [3, '快手']]), text('accountName', '账户名称', 128, true),
     text('externalAccountId', '平台账户ID', 64, true), select('interfaceMode', '接口模式', [['UNCONFIRMED', '待确认'], ['TENCENT_MARKETING', '腾讯 Marketing'], ['TENCENT_CONVERSION', '腾讯转化'], ['BAIDU_CONVERSION', '百度转化'], ['KUAISHOU_CONVERSION', '快手转化']]),
-    text('dataSourceId', '数据源标识'), text('payEvent', '支付事件映射'),
+    text('dataSourceId', '数据源标识'), text('payEvent', '支付事件映射'), text('submitEvent', '资料提交事件映射', 64), text('addContactEvent', '加老师事件映射', 64),
     select('amountUnit', '金额单位', [['UNCONFIRMED', '待确认'], ['FEN', '分'], ['YUAN', '元']]), text('remark', '备注', 255)],
   route: [select('scopeType', '承接范围', [[1, '全局'], [2, '指定落地页']]), text('landingPageId', '落地页ID', 20),
     text('corpRowId', '企业'), text('teacherRowId', '老师'),

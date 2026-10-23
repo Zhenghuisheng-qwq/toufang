@@ -15,6 +15,14 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName("pay_record")
 public class PayRecord extends AcqEntity implements Serializable {
+    @Override public String toString(){return "PayRecord[redacted]";}
+
+    private String confirmationSource;
+    private String evidenceHash;
+    private String paymentUrl;
+    private String attemptState;
+    private String attemptOwner;
+    private LocalDateTime attemptUntil;
 
     @Serial
     private static final long serialVersionUID = 1L;
